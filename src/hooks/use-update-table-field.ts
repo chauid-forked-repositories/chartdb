@@ -40,14 +40,14 @@ const generateFieldRegexPatterns = (
     if (fieldAttributes.hasCharMaxLength) {
         if (fieldAttributes.hasCharMaxLengthOption) {
             return {
-                regex: `^${typeName}\\((\\d+|[mM][aA][xX])\\)${arrayPattern}$`,
+                regex: `^${typeName}\\s*\\(\\s*((\\d+|[mM][aA][xX])\\)${arrayPattern}$`,
                 extractRegex: supportsArrays
                     ? /\((\d+|max)\)(\[\])?/i
                     : /\((\d+|max)\)/i,
             };
         }
         return {
-            regex: `^${typeName}\\(\\d+\\)${arrayPattern}$`,
+            regex: `^${typeName}\\s*\\(\\s*(\\d+)\\)${arrayPattern}$`,
             extractRegex: supportsArrays ? /\((\d+)\)(\[\])?/ : /\((\d+)\)/,
         };
     }
@@ -65,6 +65,15 @@ const generateFieldRegexPatterns = (
         return {
             regex: `^${typeName}\\s*\\(\\s*\\d+\\s*\\)${arrayPattern}$`,
             extractRegex: supportsArrays ? /\((\d+)\)(\[\])?/ : /\((\d+)\)/,
+        };
+    }
+
+    if (fieldAttributes.allowedValues) {
+        return {
+            regex: `^${typeName}\\s*\\(\\s*'\\w+'\\s*(?:,\\s*'\\w+'\\s*)*\\)${arrayPattern}$`,
+            extractRegex: new RegExp(
+                `^${typeName}\\s*\\(\\s*'(\\w+)'\\s*(?:,\\s*'(\\w+)'\\s*)*\\)${arrayPattern}$`
+            ),
         };
     }
 
@@ -192,6 +201,7 @@ export const useUpdateTableField = (
             let characterMaximumLength: string | undefined = undefined;
             let precision: number | undefined = undefined;
             let scale: number | undefined = undefined;
+            let allowedValues: string[] | undefined = undefined;
             let isArray: boolean | undefined = undefined;
 
             if (regexMatches?.length) {
@@ -211,6 +221,18 @@ export const useUpdateTableField = (
                         : undefined;
                 } else if (dataType?.fieldAttributes?.precision) {
                     precision = parseInt(regexMatches[1]);
+                } else if (dataType?.fieldAttributes?.allowedValues) {
+                    const matchesArr = regexMatches[0];
+                    allowedValues = matchesArr
+                        .replace(dataType?.name, '')
+                        .split(',')
+                        .map((val) =>
+                            val
+                                .replaceAll("'", '')
+                                .replaceAll('(', '')
+                                .replaceAll(')', '')
+                                .trim()
+                        );
                 }
 
                 // Set isArray if the array indicator was found and the type supports arrays
@@ -248,6 +270,7 @@ export const useUpdateTableField = (
                 characterMaximumLength,
                 precision,
                 scale,
+                allowedValues,
                 isArray,
                 ...(typeRequiresNotNull ? { nullable: false } : {}),
                 increment: shouldForceIncrement ? true : undefined,

@@ -140,6 +140,7 @@ export const en = {
                     add_index: 'Add Index',
                     add_check: 'Add Check',
                     index_select_fields: 'Select fields',
+                    select_input_placeholder: 'Search...',
                     no_types_found: 'No types found',
                     field_name: 'Name',
                     field_type: 'Type',
@@ -155,6 +156,8 @@ export const en = {
                         default_value: 'Default Value',
                         no_default: 'No default',
                         delete_field: 'Delete Field',
+                        allowed_values: 'Enum/Set Values',
+                        no_allowed_values: 'No Values',
                     },
                     index_actions: {
                         title: 'Index Attributes',
@@ -319,6 +322,8 @@ export const en = {
                     'Each database has its own unique features and capabilities.',
                 check_examples_long: 'Check Examples',
                 check_examples_short: 'Examples',
+                check_templates_long: 'Check Templates',
+                check_templates_short: 'Templates',
             },
 
             import_database: {
@@ -513,6 +518,11 @@ export const en = {
             new_relationship: 'New Relationship',
             new_area: 'New Area',
             new_note: 'New Note',
+        },
+
+        area_node_context_menu: {
+            edit_name: 'Edit Area Name',
+            delete_area: 'Delete Area',
         },
 
         table_node_context_menu: {

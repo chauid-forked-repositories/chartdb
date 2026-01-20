@@ -163,6 +163,8 @@ export const mr: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'अचूकता',
                         scale: 'प्रमाण',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'इंडेक्स गुणधर्म',
@@ -185,6 +187,7 @@ export const mr: LanguageTranslation = {
                         // TODO: Add translations
                         duplicate_table: 'Duplicate Table',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'कोणतेही टेबल नाहीत',
@@ -332,6 +335,8 @@ export const mr: LanguageTranslation = {
                     'प्रत्येक डेटाबेसचे स्वतःचे युनिक वैशिष्ट्ये आणि क्षमता आहेत.',
                 check_examples_long: 'उदाहरणे तपासा',
                 check_examples_short: 'उदाहरणे',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -574,6 +579,10 @@ export const mr: LanguageTranslation = {
 
         on: 'चालू',
         off: 'बंद',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

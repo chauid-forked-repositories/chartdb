@@ -41,9 +41,8 @@ export const ko_KR: LanguageTranslation = {
                 theme: '테마',
                 show_dependencies: '종속성 보이기',
                 hide_dependencies: '종속성 숨기기',
-                // TODO: Translate
-                show_minimap: 'Show Mini Map',
-                hide_minimap: 'Hide Mini Map',
+                show_minimap: '미니맵 보이기',
+                hide_minimap: '미니맵 숨기기',
             },
             backup: {
                 backup: '백업',
@@ -122,12 +121,10 @@ export const ko_KR: LanguageTranslation = {
                 add_view: '뷰 추가',
                 filter: '필터',
                 collapse: '모두 접기',
-                // TODO: Translate
-                clear: 'Clear Filter',
-                no_results: 'No tables found matching your filter.',
-                // TODO: Translate
-                show_list: 'Show Table List',
-                show_dbml: 'Show DBML Editor',
+                clear: '필터 지우기',
+                no_results: '필터와 일치하는 테이블을 찾을 수 없습니다.',
+                show_list: '테이블 목록 보기',
+                show_dbml: 'DBML 편집기 보기',
                 all_hidden: '모든 테이블이 숨겨져 있습니다',
                 show_all: '모두 표시',
 
@@ -143,6 +140,7 @@ export const ko_KR: LanguageTranslation = {
                     add_index: '인덱스 추가',
                     add_check: '체크 추가',
                     index_select_fields: '필드 선택',
+                    select_input_placeholder: '검색...',
                     no_types_found: '타입을 찾을 수 없습니다.',
                     field_name: '이름',
                     field_type: '타입',
@@ -153,13 +151,13 @@ export const ko_KR: LanguageTranslation = {
                         comments: '주석',
                         no_comments: '주석 없음',
                         delete_field: '필드 삭제',
-                        // TODO: Translate
-                        default_value: 'Default Value',
-                        no_default: 'No default',
-                        // TODO: Translate
-                        character_length: 'Max Length',
+                        default_value: '기본값',
+                        no_default: '기본값 없음',
+                        character_length: '최대 길이',
                         precision: '정밀도',
                         scale: '소수점 자릿수',
+                        allowed_values: '열거형/집합 값',
+                        no_allowed_values: '값 없음',
                     },
                     index_actions: {
                         title: '인덱스 속성',
@@ -308,14 +306,13 @@ export const ko_KR: LanguageTranslation = {
             zoom_in: '확대',
             zoom_out: '축소',
             save: '저장',
-            show_all: '전체 저장',
+            show_all: '전체 보기',
             undo: '실행 취소',
             redo: '다시 실행',
             reorder_diagram: '다이어그램 자동 정렬',
-            // TODO: Translate
-            clear_custom_type_highlight: 'Clear highlight for "{{typeName}}"',
+            clear_custom_type_highlight: '“{{typeName}}” 강조 표시 지우기',
             custom_type_highlight_tooltip:
-                'Highlighting "{{typeName}}" - Click to clear',
+                '“{{typeName}}” 강조 표시 - 클릭하여 지우기',
             highlight_overlapping_tables: '겹치는 테이블 강조 표시',
             filter: '테이블 필터',
         },
@@ -327,6 +324,8 @@ export const ko_KR: LanguageTranslation = {
                     '각 데이터베이스에는 고유한 기능과 특징이 있습니다.',
                 check_examples_long: '예제 확인',
                 check_examples_short: '예제들',
+                check_templates_long: '템플릿 확인',
+                check_templates_short: '템플릿',
             },
 
             import_database: {
@@ -432,12 +431,11 @@ export const ko_KR: LanguageTranslation = {
             scale_4x: '4x (최고 화질)',
             cancel: '취소',
             export: '내보내기',
-            // TODO: Translate
-            advanced_options: 'Advanced Options',
-            pattern: 'Include background pattern',
-            pattern_description: 'Add subtle grid pattern to background.',
-            transparent: 'Transparent background',
-            transparent_description: 'Remove background color from image.',
+            advanced_options: '고급 옵션',
+            pattern: '배경 패턴 포함',
+            pattern_description: '배경에 미세한 그리드 패턴을 추가합니다.',
+            transparent: '투명한 배경',
+            transparent_description: '이미지에서 배경 색상을 제거합니다.',
         },
 
         new_table_schema_dialog: {
@@ -493,18 +491,18 @@ export const ko_KR: LanguageTranslation = {
                     '다이어그램 JSON이 유효하지 않습니다. JSON이 올바른 형식인지 확인해주세요. 도움이 필요하신 경우 support@chartdb.io으로 연락해주세요.',
             },
         },
-        // TODO: Translate
         import_dbml_dialog: {
-            example_title: 'Import Example DBML',
-            title: 'Import DBML',
-            description: 'Import a database schema from DBML format.',
-            import: 'Import',
-            cancel: 'Cancel',
-            skip_and_empty: 'Skip & Empty',
-            show_example: 'Show Example',
+            example_title: '예제 DBML 가져오기',
+            title: 'DBML 가져오기',
+            description: 'DBML 형식에서 데이터베이스 스키마를 가져옵니다.',
+            import: '가져오기',
+            cancel: '취소',
+            skip_and_empty: '건너뛰기 및 비우기',
+            show_example: '예제 보기',
             error: {
-                title: 'Error',
-                description: 'Failed to parse DBML. Please check the syntax.',
+                title: 'DBML 가져오기 오류',
+                description:
+                    'DBML을 구문 분석하지 못했습니다. 구문을 확인해주세요.',
             },
         },
         relationship_type: {
@@ -522,11 +520,16 @@ export const ko_KR: LanguageTranslation = {
             new_note: '새 메모',
         },
 
+        area_node_context_menu: {
+            edit_name: '영역 이름 편집',
+            delete_area: '영역 삭제',
+        },
+
         table_node_context_menu: {
             edit_table: '테이블 수정',
             duplicate_table: '테이블 복제',
             delete_table: '테이블 삭제',
-            add_relationship: 'Add Relationship', // TODO: Translate
+            add_relationship: '관계 추가',
         },
 
         canvas: {

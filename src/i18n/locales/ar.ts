@@ -159,6 +159,8 @@ export const ar: LanguageTranslation = {
                         scale: 'النطاق',
                         default_value: 'Default Value',
                         no_default: 'No default',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'خصائص الفهرس',
@@ -180,6 +182,7 @@ export const ar: LanguageTranslation = {
                         duplicate_table: 'نسخ الجدول',
                         delete_table: 'حذف الجدول',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'لا توجد جداول',
@@ -322,6 +325,8 @@ export const ar: LanguageTranslation = {
                     'تتمتع كل قاعدة بيانات بمميزاتها وقدراتها الفريدة.',
                 check_examples_long: 'ألقي نظرة على الأمثلة',
                 check_examples_short: 'أمثلة',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -551,6 +556,10 @@ export const ar: LanguageTranslation = {
         },
         on: 'تشغيل',
         off: 'إيقاف',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

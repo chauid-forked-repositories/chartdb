@@ -70,7 +70,7 @@ export const DiagramRowActionsMenu: React.FC<DiagramRowActionsMenuProps> = ({
             <DropdownMenuContent align="end">
                 <DropdownMenuItem
                     onClick={onOpen}
-                    className="flex justify-between gap-4"
+                    className="flex justify-between gap-4 hover:bg-accent hover:text-accent-foreground"
                 >
                     {t('open_diagram_dialog.diagram_actions.open')}
                     <SquareArrowOutUpRight className="size-3.5" />
@@ -78,7 +78,7 @@ export const DiagramRowActionsMenu: React.FC<DiagramRowActionsMenuProps> = ({
 
                 <DropdownMenuItem
                     onClick={onDuplicate}
-                    className="flex justify-between gap-4"
+                    className="flex justify-between gap-4 hover:bg-accent hover:text-accent-foreground"
                 >
                     {t('open_diagram_dialog.diagram_actions.duplicate')}
                     <Layers2 className="size-3.5" />
@@ -87,7 +87,7 @@ export const DiagramRowActionsMenu: React.FC<DiagramRowActionsMenuProps> = ({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                     onClick={onDelete}
-                    className="flex justify-between gap-4 text-red-700"
+                    className="flex justify-between gap-4 text-red-700 hover:bg-accent hover:text-accent-foreground"
                 >
                     {t('open_diagram_dialog.diagram_actions.delete')}
                     <Trash2 className="size-3.5 text-red-700" />

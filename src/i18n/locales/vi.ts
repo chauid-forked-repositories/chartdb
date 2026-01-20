@@ -160,6 +160,8 @@ export const vi: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Độ chính xác',
                         scale: 'Tỷ lệ',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Thuộc tính chỉ mục',
@@ -181,6 +183,7 @@ export const vi: LanguageTranslation = {
                         duplicate_table: 'Nhân đôi bảng',
                         delete_table: 'Xóa bảng',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Không có bảng',
@@ -327,6 +330,8 @@ export const vi: LanguageTranslation = {
                     'Mỗi cơ sở dữ liệu có những tính năng và khả năng riêng biệt.',
                 check_examples_long: 'Xem ví dụ',
                 check_examples_short: 'Ví dụ',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -560,6 +565,10 @@ export const vi: LanguageTranslation = {
 
         on: 'Bật',
         off: 'Tắt',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

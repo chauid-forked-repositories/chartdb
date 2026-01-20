@@ -159,6 +159,8 @@ export const uk: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Точність',
                         scale: 'Масштаб',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Атрибути індексу',
@@ -180,6 +182,7 @@ export const uk: LanguageTranslation = {
                         duplicate_table: 'Дублювати таблицю',
                         delete_table: 'Видалити таблицю',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Без таблиць',
@@ -327,6 +330,8 @@ export const uk: LanguageTranslation = {
                     'Кожна база даних має свої унікальні особливості та можливості.',
                 check_examples_long: 'Подивіться приклади',
                 check_examples_short: 'Приклади',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -559,6 +564,10 @@ export const uk: LanguageTranslation = {
 
         on: 'Увімк',
         off: 'Вимк',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

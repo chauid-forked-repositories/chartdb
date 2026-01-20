@@ -107,6 +107,7 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                 characterMaximumLength: localField.characterMaximumLength,
                 precision: localField.precision,
                 scale: localField.scale,
+                allowedValues: localField.allowedValues,
                 unique: localField.unique,
                 default: localField.default,
                 increment: localField.increment,
@@ -187,7 +188,7 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                 }
                             />
                         </div>
-                        {supportsAutoIncrement ? (
+                        {supportsAutoIncrement && (
                             <div className="flex items-center justify-between">
                                 <Label
                                     htmlFor="increment"
@@ -212,8 +213,8 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                     }
                                 />
                             </div>
-                        ) : null}
-                        {supportsArray ? (
+                        )}
+                        {supportsArray && (
                             <div className="flex items-center justify-between">
                                 <Label
                                     htmlFor="isArray"
@@ -232,7 +233,7 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                     }
                                 />
                             </div>
-                        ) : null}
+                        )}
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="default" className="text-subtitle">
                                 {t(
@@ -254,7 +255,7 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                 readOnly={readonly}
                             />
                         </div>
-                        {dataFieldType?.fieldAttributes?.hasCharMaxLength ? (
+                        {dataFieldType?.fieldAttributes?.hasCharMaxLength && (
                             <div className="flex flex-col gap-2">
                                 <Label
                                     htmlFor="width"
@@ -354,6 +355,11 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                             localField.characterMaximumLength ??
                                             ''
                                         }
+                                        max={
+                                            dataFieldType?.fieldAttributes
+                                                ?.maxLength || undefined
+                                        }
+                                        min={0}
                                         type="number"
                                         onChange={(e) =>
                                             setLocalField((current) => ({
@@ -367,9 +373,9 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                     />
                                 )}
                             </div>
-                        ) : null}
-                        {dataFieldType?.fieldAttributes?.precision ||
-                        dataFieldType?.fieldAttributes?.scale ? (
+                        )}
+                        {(dataFieldType?.fieldAttributes?.precision ||
+                            dataFieldType?.fieldAttributes?.scale) && (
                             <div className="flex gap-2">
                                 <div className="flex flex-1 flex-col gap-2">
                                     <Label
@@ -424,7 +430,7 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                 <div className="flex flex-1 flex-col gap-2">
                                     <Label
                                         htmlFor="width"
-                                        className="text-subtitle"
+                                        className="text-nowrap text-subtitle"
                                     >
                                         {t(
                                             'side_panel.tables_section.table.field_actions.scale'
@@ -446,9 +452,8 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                             dataFieldType?.fieldAttributes
                                                 ?.scale
                                                 ? (
-                                                      findDataTypeDataById(
-                                                          field.type.id
-                                                      )?.fieldAttributes
+                                                      dataFieldType
+                                                          ?.fieldAttributes
                                                           ?.scale as FieldAttributeRange
                                                   ).min
                                                 : undefined
@@ -473,7 +478,35 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                     />
                                 </div>
                             </div>
-                        ) : null}
+                        )}
+                        {dataFieldType?.fieldAttributes?.allowedValues && (
+                            <div className="flex flex-col gap-2">
+                                <Label
+                                    htmlFor="allowedValues"
+                                    className="text-subtitle"
+                                >
+                                    {t(
+                                        'side_panel.tables_section.table.field_actions.allowed_values'
+                                    )}
+                                </Label>
+                                <Input
+                                    value={localField.allowedValues ?? ''}
+                                    onChange={(e) =>
+                                        setLocalField((current) => ({
+                                            ...current,
+                                            allowedValues: e.target.value
+                                                ? e.target.value.split(',')
+                                                : undefined,
+                                        }))
+                                    }
+                                    placeholder={t(
+                                        'side_panel.tables_section.table.field_actions.no_allowed_values'
+                                    )}
+                                    className="w-full rounded-md bg-muted text-sm"
+                                    readOnly={readonly}
+                                />
+                            </div>
+                        )}
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="width" className="text-subtitle">
                                 {t(
@@ -496,7 +529,7 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                             />
                         </div>
                     </div>
-                    {!readonly ? (
+                    {!readonly && (
                         <>
                             <Separator orientation="horizontal" />
                             <Button
@@ -510,7 +543,7 @@ export const TableFieldPopover: React.FC<TableFieldPopoverProps> = ({
                                 )}
                             </Button>
                         </>
-                    ) : null}
+                    )}
                 </div>
             </PopoverContent>
         </Popover>

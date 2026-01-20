@@ -37,6 +37,17 @@ export const setupDBMLLanguage = (monaco: Monaco) => {
         colors: {},
     });
 
+    monaco.languages.setLanguageConfiguration('dbml', {
+        brackets: [
+            ['(', ')'],
+            ['[', ']'],
+            ['{', '}'],
+            ["'", "'"],
+            ['"', '"'],
+            ['`', '`'],
+        ],
+    });
+
     const dataTypesNames = dataTypes.map((dt) => dt.name);
     const datatypePattern = dataTypesNames.join('|');
 

@@ -73,7 +73,7 @@ const timeAgolocaleFromLanguage = async (
 };
 
 export const LastSaved: React.FC<LastSavedProps> = () => {
-    const { currentDiagram } = useChartDB();
+    const { currentDiagram, updateDiagramUpdatedAt } = useChartDB();
     const { i18n } = useTranslation();
     const [language, setLanguage] = useState<string>('en_US');
 
@@ -95,12 +95,14 @@ export const LastSaved: React.FC<LastSavedProps> = () => {
             <TooltipTrigger>
                 <Badge
                     variant="secondary"
-                    className="flex gap-1.5 whitespace-nowrap"
+                    className="flex gap-1.5 whitespace-nowrap border border-input bg-background hover:bg-accent hover:text-accent-foreground"
+                    onClick={updateDiagramUpdatedAt}
                 >
-                    <Save size={16} />
+                    <Save size={18} />
                     <TimeAgo
                         datetime={currentDiagram.updatedAt}
                         locale={language}
+                        className="text-[12.5px]"
                     />
                 </Badge>
             </TooltipTrigger>

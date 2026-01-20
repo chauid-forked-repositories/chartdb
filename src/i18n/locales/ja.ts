@@ -163,6 +163,8 @@ export const ja: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: '精度',
                         scale: '小数点以下桁数',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'インデックス属性',
@@ -184,6 +186,7 @@ export const ja: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table', // TODO: Translate
                         delete_table: 'テーブルを削除',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'テーブルがありません',
@@ -329,6 +332,8 @@ export const ja: LanguageTranslation = {
                 description: '各データベースには独自の機能と能力があります。',
                 check_examples_long: '例を確認',
                 check_examples_short: '例',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -565,6 +570,10 @@ export const ja: LanguageTranslation = {
 
         on: 'オン',
         off: 'オフ',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

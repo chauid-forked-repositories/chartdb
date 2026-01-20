@@ -46,7 +46,7 @@ export const genericDataTypes: readonly DataTypeData[] = [
     { name: 'blob', id: 'blob' },
     { name: 'char', id: 'char', fieldAttributes: { hasCharMaxLength: true } },
     { name: 'double', id: 'double' },
-    { name: 'enum', id: 'enum' },
+    { name: 'enum', id: 'enum', fieldAttributes: { allowedValues: true } },
     { name: 'float', id: 'float' },
     {
         name: 'numeric',

@@ -21,7 +21,11 @@ import {
 import { Table, Workflow } from 'lucide-react';
 import { useLayout } from '@/hooks/use-layout';
 import { useTranslation } from 'react-i18next';
-import { DiscordLogoIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
+import {
+    // DiscordLogoIcon,
+    // TwitterLogoIcon,
+    HomeIcon,
+} from '@radix-ui/react-icons';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 import ChartDBLogo from '@/assets/logo-light.png';
 import ChartDBDarkLogo from '@/assets/logo-dark.png';
@@ -79,15 +83,6 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = () => {
     const baseItems: SidebarItem[] = useMemo(
         () => [
             {
-                title: t('editor_sidebar.tables'),
-                icon: Table,
-                onClick: () => {
-                    showSidePanel();
-                    selectSidebarSection('tables');
-                },
-                active: selectedSidebarSection === 'tables',
-            },
-            {
                 title: 'DBML',
                 icon: CodeXml,
                 onClick: () => {
@@ -95,6 +90,15 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = () => {
                     selectSidebarSection('dbml');
                 },
                 active: selectedSidebarSection === 'dbml',
+            },
+            {
+                title: t('editor_sidebar.tables'),
+                icon: Table,
+                onClick: () => {
+                    showSidePanel();
+                    selectSidebarSection('tables');
+                },
+                active: selectedSidebarSection === 'tables',
             },
             {
                 title: t('editor_sidebar.refs'),
@@ -141,27 +145,33 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = () => {
 
     const footerItems: SidebarItem[] = useMemo(
         () => [
-            {
-                title: 'Discord',
-                icon: DiscordLogoIcon,
-                onClick: () =>
-                    window.open('https://discord.gg/QeFwyWSKwC', '_blank'),
-                active: false,
-            },
-            {
-                title: 'Twitter',
-                icon: TwitterLogoIcon,
-                onClick: () =>
-                    window.open(
-                        'https://x.com/intent/follow?screen_name=jonathanfishner',
-                        '_blank'
-                    ),
-                active: false,
-            },
+            // {
+            //     title: 'Discord',
+            //     icon: DiscordLogoIcon,
+            //     onClick: () =>
+            //         window.open('https://discord.gg/QeFwyWSKwC', '_blank'),
+            //     active: false,
+            // },
+            // {
+            //     title: 'Twitter',
+            //     icon: TwitterLogoIcon,
+            //     onClick: () =>
+            //         window.open(
+            //             'https://x.com/intent/follow?screen_name=jonathanfishner',
+            //             '_blank'
+            //         ),
+            //     active: false,
+            // },
             {
                 title: 'Docs',
                 icon: BookOpen,
                 onClick: () => window.open('https://docs.chartdb.io', '_blank'),
+                active: false,
+            },
+            {
+                title: 'ChartDB',
+                icon: HomeIcon,
+                onClick: () => window.open('https://chartdb.io/', '_blank'),
                 active: false,
             },
         ],
@@ -177,11 +187,7 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = () => {
         >
             {!isDesktop ? (
                 <SidebarHeader>
-                    <a
-                        href="https://chartdb.io"
-                        className="cursor-pointer"
-                        rel="noreferrer"
-                    >
+                    <a href="/" className="cursor-pointer" rel="noreferrer">
                         <img
                             src={
                                 effectiveTheme === 'light'

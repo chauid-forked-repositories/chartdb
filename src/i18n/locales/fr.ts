@@ -158,6 +158,8 @@ export const fr: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Précision',
                         scale: 'Échelle',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: "Attributs de l'Index",
@@ -179,6 +181,7 @@ export const fr: LanguageTranslation = {
                         delete_table: 'Supprimer la Table',
                         change_schema: 'Changer le Schéma',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Aucune table',
@@ -325,6 +328,8 @@ export const fr: LanguageTranslation = {
                     'Chaque base de données a ses propres fonctionnalités et capacités uniques.',
                 check_examples_long: 'Voir les Exemples',
                 check_examples_short: 'Exemples',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -560,6 +565,10 @@ export const fr: LanguageTranslation = {
 
         on: 'Activé',
         off: 'Désactivé',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

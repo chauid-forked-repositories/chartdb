@@ -3,14 +3,16 @@ import { Link } from '@/components/link/link';
 import { LayoutGrid } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-export interface ExampleOptionProps {}
+export interface ExampleOptionProps {
+    sampleType: 'example' | 'template';
+}
 
-export const ExampleOption: React.FC<ExampleOptionProps> = () => {
+export const ExampleOption: React.FC<ExampleOptionProps> = ({ sampleType }) => {
     const { t } = useTranslation();
     return (
         <Link
-            href="/examples"
-            className="col-span-3 text-primary hover:text-primary"
+            href={sampleType === 'example' ? '/examples' : '/templates'}
+            className="col-span-3 grow text-primary hover:text-primary"
         >
             <div className="flex h-8 w-full cursor-pointer flex-row items-center justify-center gap-2 rounded-md border py-3 text-center">
                 <div className="flex items-center">
@@ -19,12 +21,16 @@ export const ExampleOption: React.FC<ExampleOptionProps> = () => {
                 <div className="flex flex-col-reverse">
                     <div className="hidden text-sm text-primary md:flex">
                         {t(
-                            'new_diagram_dialog.database_selection.check_examples_long'
+                            sampleType === 'example'
+                                ? 'new_diagram_dialog.database_selection.check_examples_long'
+                                : 'new_diagram_dialog.database_selection.check_templates_long'
                         )}
                     </div>
                     <div className="flex text-xs text-primary md:hidden">
                         {t(
-                            'new_diagram_dialog.database_selection.check_examples_short'
+                            sampleType === 'example'
+                                ? 'new_diagram_dialog.database_selection.check_examples_short'
+                                : 'new_diagram_dialog.database_selection.check_templates_short'
                         )}
                     </div>
                 </div>

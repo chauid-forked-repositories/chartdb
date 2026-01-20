@@ -44,10 +44,14 @@ export interface StorageContext {
             includeNotes?: boolean;
         }
     ) => Promise<Diagram | undefined>;
+    // updateDiagram: (params: {
+    //     id: string;
+    //     attributes: Partial<Diagram>;
+    // }) => Promise<void>;
     updateDiagram: (params: {
         id: string;
         attributes: Partial<Diagram>;
-    }) => Promise<void>;
+    }) => void;
     deleteDiagram: (id: string) => Promise<void>;
 
     // Table operations
@@ -56,11 +60,17 @@ export interface StorageContext {
         diagramId: string;
         id: string;
     }) => Promise<DBTable | undefined>;
+    // updateTable: (params: {
+    //     id: string;
+    //     attributes: Partial<DBTable>;
+    // }) => Promise<void>;
     updateTable: (params: {
         id: string;
+        diagramId: string;
         attributes: Partial<DBTable>;
-    }) => Promise<void>;
+    }) => void;
     putTable: (params: { diagramId: string; table: DBTable }) => Promise<void>;
+    putTables: (params: { diagramId: string; tables: DBTable[] }) => void;
     deleteTable: (params: { diagramId: string; id: string }) => Promise<void>;
     listTables: (diagramId: string) => Promise<DBTable[]>;
     deleteDiagramTables: (diagramId: string) => Promise<void>;
@@ -76,6 +86,7 @@ export interface StorageContext {
     }) => Promise<DBRelationship | undefined>;
     updateRelationship: (params: {
         id: string;
+        diagramId: string;
         attributes: Partial<DBRelationship>;
     }) => Promise<void>;
     deleteRelationship: (params: {
@@ -111,10 +122,16 @@ export interface StorageContext {
         diagramId: string;
         id: string;
     }) => Promise<Area | undefined>;
+    // updateArea: (params: {
+    //     id: string;
+    //     diagramId: string;
+    //     attributes: Partial<Area>;
+    // }) => Promise<void>;
     updateArea: (params: {
         id: string;
+        diagramId: string;
         attributes: Partial<Area>;
-    }) => Promise<void>;
+    }) => void;
     deleteArea: (params: { diagramId: string; id: string }) => Promise<void>;
     listAreas: (diagramId: string) => Promise<Area[]>;
     deleteDiagramAreas: (diagramId: string) => Promise<void>;
@@ -130,6 +147,7 @@ export interface StorageContext {
     }) => Promise<DBCustomType | undefined>;
     updateCustomType: (params: {
         id: string;
+        diagramId: string;
         attributes: Partial<DBCustomType>;
     }) => Promise<void>;
     deleteCustomType: (params: {
@@ -145,10 +163,15 @@ export interface StorageContext {
         diagramId: string;
         id: string;
     }) => Promise<Note | undefined>;
+    // updateNote: (params: {
+    //     id: string;
+    //     attributes: Partial<Note>;
+    // }) => Promise<void>;
     updateNote: (params: {
         id: string;
+        diagramId: string;
         attributes: Partial<Note>;
-    }) => Promise<void>;
+    }) => void;
     deleteNote: (params: { diagramId: string; id: string }) => Promise<void>;
     listNotes: (diagramId: string) => Promise<Note[]>;
     deleteDiagramNotes: (diagramId: string) => Promise<void>;
@@ -172,6 +195,7 @@ export const storageInitialValue: StorageContext = {
     getTable: emptyFn,
     updateTable: emptyFn,
     putTable: emptyFn,
+    putTables: emptyFn,
     deleteTable: emptyFn,
     listTables: emptyFn,
     deleteDiagramTables: emptyFn,

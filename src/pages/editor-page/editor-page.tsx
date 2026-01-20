@@ -27,7 +27,7 @@ import { DiffProvider } from '@/context/diff-context/diff-provider';
 import { TopNavbarMock } from './top-navbar/top-navbar-mock';
 import { DiagramFilterProvider } from '@/context/diagram-filter-context/diagram-filter-provider';
 
-const OPEN_STAR_US_AFTER_SECONDS = 30;
+// const OPEN_STAR_US_AFTER_SECONDS = 30;
 const SHOW_STAR_US_AGAIN_AFTER_DAYS = 1;
 
 export const EditorDesktopLayoutLazy = React.lazy(
@@ -61,7 +61,7 @@ const EditorPageComponent: React.FC = () => {
         ) {
             const lastOpen = new Date().getTime();
             setStarUsDialogLastOpen(lastOpen);
-            setTimeout(openStarUsDialog, OPEN_STAR_US_AFTER_SECONDS * 1000);
+            // setTimeout(openStarUsDialog, OPEN_STAR_US_AFTER_SECONDS * 1000);
         }
     }, [
         currentDiagram?.id,

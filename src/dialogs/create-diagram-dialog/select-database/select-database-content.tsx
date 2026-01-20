@@ -129,7 +129,10 @@ export const SelectDatabaseContent: React.FC<SelectDatabaseContentProps> = ({
                             )}
                         </Button>
                     ) : null}
-                    <ExampleOption />
+                    <div className="flex gap-4">
+                        <ExampleOption sampleType="example" />
+                        <ExampleOption sampleType="template" />
+                    </div>
                 </div>
             </div>
         ),

@@ -143,7 +143,10 @@ function mapMySQLType(typeName: string): string {
             return 'TINYINT(1)'; // MySQL uses TINYINT(1) for boolean
 
         case 'enum':
-            return 'VARCHAR(50)'; // Convert ENUM to VARCHAR instead of assuming values
+            return 'ENUM';
+
+        case 'set':
+            return 'SET';
 
         case 'json':
         case 'jsonb':
@@ -259,14 +262,24 @@ export function exportMySQL({
                             ) {
                                 typeWithSize = `${typeName}(${field.precision})`;
                             }
+                        } else if (field.allowedValues) {
+                            const allowedValue = field.allowedValues
+                                .map((val) => `'${val.replace(/'/g, "''")}'`)
+                                .join(', ');
+                            if (typeName.toLowerCase() === 'enum') {
+                                typeWithSize = `ENUM(${allowedValue})`;
+                            } else if (typeName.toLowerCase() === 'set') {
+                                typeWithSize = `SET(${allowedValue})`;
+                            }
                         }
 
-                        // Set a default size for VARCHAR columns if not specified
+                        // Set a default size for CHAR, VARCHAR columns if not specified
                         if (
-                            typeName.toLowerCase() === 'varchar' &&
+                            (typeName.toLowerCase() === 'varchar' ||
+                                typeName.toLowerCase() === 'char') &&
                             !field.characterMaximumLength
                         ) {
-                            typeWithSize = `${typeName}(255)`;
+                            typeWithSize = `${typeName}(50)`;
                         }
 
                         const notNull = field.nullable ? '' : ' NOT NULL';

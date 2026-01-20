@@ -161,6 +161,8 @@ export const bn: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'নির্ভুলতা',
                         scale: 'স্কেল',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'ইনডেক্স কর্ম',
@@ -182,6 +184,7 @@ export const bn: LanguageTranslation = {
                         duplicate_table: 'টেবিল নকল করুন',
                         delete_table: 'টেবিল মুছুন',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'কোনো টেবিল নেই',
@@ -330,6 +333,8 @@ export const bn: LanguageTranslation = {
                     'প্রত্যেক ডাটাবেসের নিজস্ব বৈশিষ্ট্য এবং ক্ষমতা রয়েছে।',
                 check_examples_long: 'উদাহরণ দেখুন',
                 check_examples_short: 'উদাহরণ',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -563,6 +568,10 @@ export const bn: LanguageTranslation = {
 
         on: 'চালু',
         off: 'বন্ধ',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

@@ -148,9 +148,9 @@ export const TableField: React.FC<TableFieldProps> = ({
                     </TooltipTrigger>
                     <TooltipContent>
                         {field.type.name}
-                        {field.characterMaximumLength
-                            ? `(${field.characterMaximumLength})`
-                            : ''}
+                        {generateDBFieldSuffix(field, {
+                            databaseType,
+                        })}
                     </TooltipContent>
                 </Tooltip>
             </div>

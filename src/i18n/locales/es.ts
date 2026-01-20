@@ -160,6 +160,8 @@ export const es: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Precisión',
                         scale: 'Escala',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Atributos del Índice',
@@ -181,6 +183,7 @@ export const es: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table', // TODO: Translate
                         delete_table: 'Eliminar Tabla',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'No hay tablas',
@@ -328,6 +331,8 @@ export const es: LanguageTranslation = {
                     'Cada base de datos tiene sus propias características y capacidades únicas.',
                 check_examples_long: 'Ver Ejemplos',
                 check_examples_short: 'Ejemplos',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -564,6 +569,10 @@ export const es: LanguageTranslation = {
 
         on: 'Encendido',
         off: 'Apagado',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

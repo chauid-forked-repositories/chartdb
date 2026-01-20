@@ -94,7 +94,6 @@ export const postgresDataTypes: readonly DataTypeData[] = [
     // { name: 'time without time zone', id: 'time_without_time_zone' },
     { name: 'interval', id: 'interval' },
     { name: 'bytea', id: 'bytea' },
-    { name: 'enum', id: 'enum' },
     { name: 'point', id: 'point' },
     { name: 'line', id: 'line' },
     { name: 'lseg', id: 'lseg' },

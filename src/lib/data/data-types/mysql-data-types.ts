@@ -2,20 +2,40 @@ import type { DataTypeData } from './data-types';
 
 export const mysqlDataTypes: readonly DataTypeData[] = [
     // Level 1 - Most commonly used types
-    { name: 'int', id: 'int', usageLevel: 1 },
+    {
+        name: 'int',
+        id: 'int',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+        usageLevel: 1,
+    },
     {
         name: 'varchar',
         id: 'varchar',
-        fieldAttributes: { hasCharMaxLength: true },
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 191 },
         usageLevel: 1,
     },
-    { name: 'text', id: 'text', usageLevel: 1 },
+    {
+        name: 'text',
+        id: 'text',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 4294967295 },
+        usageLevel: 1,
+    },
     { name: 'boolean', id: 'boolean', usageLevel: 1 },
-    { name: 'timestamp', id: 'timestamp', usageLevel: 1 },
+    {
+        name: 'timestamp',
+        id: 'timestamp',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 6 },
+        usageLevel: 1,
+    },
     { name: 'date', id: 'date', usageLevel: 1 },
 
     // Level 2 - Second most common types
-    { name: 'bigint', id: 'bigint', usageLevel: 2 },
+    {
+        name: 'bigint',
+        id: 'bigint',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+        usageLevel: 2,
+    },
     {
         name: 'decimal',
         id: 'decimal',
@@ -27,23 +47,95 @@ export const mysqlDataTypes: readonly DataTypeData[] = [
                 default: 10,
             },
             scale: {
+                max: 38,
+                min: 0,
+                default: 0,
+            },
+        },
+    },
+    {
+        name: 'datetime',
+        id: 'datetime',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 6 },
+        usageLevel: 2,
+    },
+    { name: 'json', id: 'json', usageLevel: 2 },
+    { name: 'uuid', id: 'uuid', usageLevel: 2 },
+
+    // Less common types
+    {
+        name: 'tinyint',
+        id: 'tinyint',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+    },
+    {
+        name: 'smallint',
+        id: 'smallint',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+    },
+    {
+        name: 'mediumint',
+        id: 'mediumint',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+    },
+    {
+        name: 'numeric',
+        id: 'numeric',
+        fieldAttributes: {
+            precision: {
+                max: 65,
+                min: 1,
+                default: 10,
+            },
+            scale: {
+                max: 38,
+                min: 0,
+                default: 0,
+            },
+        },
+    },
+    {
+        name: 'float',
+        id: 'float',
+        fieldAttributes: {
+            precision: {
+                max: 255,
+                min: 1,
+                default: 10,
+            },
+            scale: {
                 max: 30,
                 min: 0,
                 default: 0,
             },
         },
     },
-    { name: 'datetime', id: 'datetime', usageLevel: 2 },
-    { name: 'json', id: 'json', usageLevel: 2 },
-
-    // Less common types
-    { name: 'tinyint', id: 'tinyint' },
-    { name: 'smallint', id: 'smallint' },
-    { name: 'mediumint', id: 'mediumint' },
-    { name: 'float', id: 'float' },
-    { name: 'double', id: 'double' },
-    { name: 'bit', id: 'bit' },
-    { name: 'char', id: 'char', fieldAttributes: { hasCharMaxLength: true } },
+    {
+        name: 'double',
+        id: 'double',
+        fieldAttributes: {
+            precision: {
+                max: 255,
+                min: 1,
+                default: 10,
+            },
+            scale: {
+                max: 30,
+                min: 0,
+                default: 0,
+            },
+        },
+    },
+    {
+        name: 'bit',
+        id: 'bit',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 64 },
+    },
+    {
+        name: 'char',
+        id: 'char',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 191 },
+    },
     { name: 'tinytext', id: 'tinytext' },
     { name: 'mediumtext', id: 'mediumtext' },
     { name: 'longtext', id: 'longtext' },
@@ -53,9 +145,13 @@ export const mysqlDataTypes: readonly DataTypeData[] = [
     { name: 'blob', id: 'blob' },
     { name: 'mediumblob', id: 'mediumblob' },
     { name: 'longblob', id: 'longblob' },
-    { name: 'enum', id: 'enum' },
-    { name: 'set', id: 'set' },
-    { name: 'time', id: 'time' },
+    { name: 'enum', id: 'enum', fieldAttributes: { allowedValues: true } },
+    { name: 'set', id: 'set', fieldAttributes: { allowedValues: true } },
+    {
+        name: 'time',
+        id: 'time',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 6 },
+    },
     { name: 'year', id: 'year' },
     { name: 'geometry', id: 'geometry' },
     { name: 'point', id: 'point' },

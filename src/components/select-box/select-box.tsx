@@ -108,12 +108,16 @@ export const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
                 setIsOpen(isOpen);
 
                 if (isOpen) {
-                    setSearchTerm('');
+                    if (valueSuffix !== undefined) {
+                        const searchTermValue = value ?? '';
+                        const searchTermSuffix = valueSuffix ?? '';
+                        setSearchTerm(searchTermValue + searchTermSuffix);
+                    }
                 }
 
                 setTimeout(() => (document.body.style.pointerEvents = ''), 500);
             },
-            [setOpen]
+            [setOpen, value, valueSuffix]
         );
 
         const handleSelect = React.useCallback(
@@ -421,7 +425,12 @@ export const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
                                     onSearchChange?.(e);
                                 }}
                                 ref={ref}
-                                placeholder={inputPlaceholder ?? 'Search...'}
+                                placeholder={
+                                    inputPlaceholder ??
+                                    t(
+                                        'side_panel.tables_section.table.select_input_placeholder'
+                                    )
+                                }
                                 className="h-9"
                             />
                             {searchTerm && (

@@ -161,6 +161,8 @@ export const ne: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'परिशुद्धता',
                         scale: 'स्केल',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'सूचक विशेषताहरू',
@@ -182,6 +184,7 @@ export const ne: LanguageTranslation = {
                         duplicate_table: 'तालिकाको नक्कली रुप बनाउनुहोस',
                         delete_table: 'तालिका हटाउनुहोस्',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'कुनै तालिकाहरू छैनन्',
@@ -329,6 +332,8 @@ export const ne: LanguageTranslation = {
                     'प्रत्येक डाटाबेसलाई आफ्नो विशेषता र क्षमताहरू छन्।',
                 check_examples_long: 'उदाहरणहरू हेर्नुहोस्',
                 check_examples_short: 'उदाहरणहरू',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -565,6 +570,10 @@ export const ne: LanguageTranslation = {
 
         on: 'सक्रिय',
         off: 'निष्क्रिय',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

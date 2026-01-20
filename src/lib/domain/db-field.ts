@@ -20,6 +20,7 @@ export interface DBField {
     characterMaximumLength?: string | null;
     precision?: number | null;
     scale?: number | null;
+    allowedValues?: string[];
     default?: string | null;
     collation?: string | null;
     comments?: string | null;
@@ -39,6 +40,7 @@ export const dbFieldSchema: z.ZodType<DBField> = z.object({
     characterMaximumLength: z.string().or(z.null()).optional(),
     precision: z.number().or(z.null()).optional(),
     scale: z.number().or(z.null()).optional(),
+    allowedValues: z.array(z.string()).optional(),
     default: z.string().or(z.null()).optional(),
     collation: z.string().or(z.null()).optional(),
     comments: z.string().or(z.null()).optional(),
@@ -109,6 +111,12 @@ const generateExtendedSuffix = (
         return `(${precision})`;
     }
 
+    // Allowed values types (e.g., ENUM, SET)
+    if (fieldAttributes.allowedValues) {
+        const allowedValues = field.allowedValues || [];
+        return `(${allowedValues.join(', ')})`;
+    }
+
     return '';
 };
 
@@ -116,6 +124,11 @@ const generateStandardSuffix = (field: DBField): string => {
     // Character maximum length
     if (field.characterMaximumLength) {
         return `(${field.characterMaximumLength})`;
+    }
+
+    // Allowed values for ENUM/SET
+    if (field.allowedValues && field.allowedValues.length > 0) {
+        return formatAllowedValues(field.allowedValues, '');
     }
 
     return formatPrecisionAndScale(field.precision, field.scale, '');
@@ -134,5 +147,15 @@ const formatPrecisionAndScale = (
         return `(${precision})`;
     }
 
+    return fallback;
+};
+
+const formatAllowedValues = (
+    allowedValues: string[] | null | undefined,
+    fallback: string
+): string => {
+    if (allowedValues && allowedValues.length > 0) {
+        return `(${allowedValues.map((val) => `'${val.replace(/'/g, "''")}'`).join(', ')})`;
+    }
     return fallback;
 };

@@ -160,6 +160,8 @@ export const id_ID: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Presisi',
                         scale: 'Skala',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Atribut Indeks',
@@ -181,6 +183,7 @@ export const id_ID: LanguageTranslation = {
                         duplicate_table: 'Duplikat Tabel',
                         delete_table: 'Hapus Tabel',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Tidak ada tabel',
@@ -327,6 +330,8 @@ export const id_ID: LanguageTranslation = {
                     'Setiap database memiliki fitur dan kemampuan unik.',
                 check_examples_long: 'Lihat Contoh',
                 check_examples_short: 'Contoh',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -561,6 +566,10 @@ export const id_ID: LanguageTranslation = {
 
         on: 'Aktif',
         off: 'Nonaktif',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

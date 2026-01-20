@@ -35,11 +35,7 @@ export const TopNavbarMobile: React.FC<TopNavbarMobileProps> = () => {
                         >
                             <MenuIcon className="size-5" />
                         </Button>
-                        <a
-                            href="https://chartdb.io"
-                            className="cursor-pointer"
-                            rel="noreferrer"
-                        >
+                        <a href="/" className="cursor-pointer" rel="noreferrer">
                             <img
                                 src={ChartDBLogo}
                                 alt="chartDB"

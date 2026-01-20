@@ -12,6 +12,116 @@ import type { Area } from '@/lib/domain/area';
 import type { DBCustomType } from '@/lib/domain/db-custom-type';
 import type { DiagramFilter } from '@/lib/domain/diagram-filter/diagram-filter';
 import type { Note } from '@/lib/domain/note';
+import { BACKEND_SERVER_URL } from '@/lib/env';
+import { toast } from '@/components/toast/use-toast';
+import { debounce } from '@/lib/utils';
+
+type requestProps = {
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    path: string;
+    payload?: object;
+    params?: object;
+};
+
+const API_SERVER_URL = window?.env?.BACKEND_SERVER_URL ?? BACKEND_SERVER_URL;
+const USE_REMOTE_DB = API_SERVER_URL !== undefined && API_SERVER_URL.length > 0;
+
+let BACKEND_API_TOKEN = sessionStorage.getItem('backend_api_token') ?? '';
+if (USE_REMOTE_DB) {
+    if (BACKEND_API_TOKEN === '') {
+        BACKEND_API_TOKEN = window?.prompt('Enter a value:') ?? '';
+    }
+    sessionStorage.setItem('backend_api_token', BACKEND_API_TOKEN);
+}
+
+const requestToServer = async (props: requestProps): Promise<object> => {
+    const apiUrl = API_SERVER_URL + '/chartdb' + props.path;
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        Authorization: `Mytoken-type ${BACKEND_API_TOKEN}`,
+    };
+    if (props.method === 'GET' || props.method === 'DELETE') {
+        const apiUrlWithParams = props.params
+            ? apiUrl.concat(
+                  '?',
+                  new URLSearchParams(
+                      props.params as Record<string, string>
+                  ).toString()
+              )
+            : apiUrl;
+        const response = await fetch(apiUrlWithParams, {
+            method: props.method,
+            headers,
+        })
+            .then((res) => {
+                if (res) {
+                    return { res, error: undefined };
+                }
+                return { res: JSON.parse('{ "ok": true }'), error: undefined };
+            })
+            .catch(() => {
+                return {
+                    res: JSON.parse(
+                        '{"ok": false,"status": "CONN_REFUSED","statusText": "Network Error"}'
+                    ),
+                    error: 'Network Error',
+                };
+            });
+
+        if (response.error !== undefined) {
+            toast({
+                title: `Sync DB Failed (${response.res.status})`,
+                description: `Can't connect to server: ${response.res.statusText}`,
+                variant: 'destructive',
+            });
+        } else if (!response.res.ok) {
+            toast({
+                title: `Sync DB Failed (${response.res.status})`,
+                description: `Failed to fetch ${apiUrl}: ${response.res.statusText}`,
+                variant: 'destructive',
+            });
+        }
+        if (response.res && props.method === 'GET') {
+            return await response.res.json();
+        }
+        return {};
+    } else {
+        // POST or PUT
+        const response = await fetch(apiUrl, {
+            method: props.method,
+            headers,
+            body: JSON.stringify(props.payload),
+        })
+            .then((res) => {
+                if (res) {
+                    return { res, error: undefined };
+                }
+                return { res: JSON.parse('{ "ok": true }'), error: undefined };
+            })
+            .catch(() => {
+                return {
+                    res: JSON.parse(
+                        '{"ok": false,"status": 500,"statusText": "Network Error"}'
+                    ),
+                    error: 'Network Error',
+                };
+            });
+        if (response.error !== undefined) {
+            toast({
+                title: `Sync DB Failed`,
+                description: `Can't connect to server: ${response.error}`,
+                variant: 'destructive',
+            });
+        } else if (!response.res.ok) {
+            toast({
+                title: `Sync DB Failed (${response.res.status})`,
+                description: `Failed to fetch ${apiUrl}: ${response.res.statusText}`,
+                variant: 'destructive',
+            });
+        }
+        return await response.res;
+    }
+};
 
 export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     children,
@@ -239,15 +349,17 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
         });
 
         dexieDB.on('ready', async () => {
-            const config = await dexieDB.config.get(1);
+            if (!USE_REMOTE_DB) {
+                const config = await dexieDB.config.get(1);
 
-            if (!config) {
-                const diagrams = await dexieDB.diagrams.toArray();
+                if (!config) {
+                    const diagrams = await dexieDB.diagrams.toArray();
 
-                await dexieDB.config.add({
-                    id: 1,
-                    defaultDiagramId: diagrams?.[0]?.id ?? '',
-                });
+                    await dexieDB.config.add({
+                        id: 1,
+                        defaultDiagramId: diagrams?.[0]?.id ?? '',
+                    });
+                }
             }
         });
         return dexieDB;
@@ -255,11 +367,25 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const getConfig: StorageContext['getConfig'] =
         useCallback(async (): Promise<ChartDBConfig | undefined> => {
+            if (USE_REMOTE_DB) {
+                return (await requestToServer({
+                    path: '/config/1',
+                    method: 'GET',
+                })) as ChartDBConfig;
+            }
             return await db.config.get(1);
         }, [db]);
 
     const updateConfig: StorageContext['updateConfig'] = useCallback(
         async (config) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: '/config/1',
+                    method: 'PUT',
+                    payload: config,
+                });
+                return;
+            }
             await db.config.update(1, config);
         },
         [db]
@@ -267,9 +393,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const getDiagramFilter: StorageContext['getDiagramFilter'] = useCallback(
         async (diagramId: string): Promise<DiagramFilter | undefined> => {
-            const filter = await db.diagram_filters.get({ diagramId });
-
-            return filter;
+            if (USE_REMOTE_DB) {
+                return await requestToServer({
+                    path: `/diagram-filters/${diagramId}`,
+                    method: 'GET',
+                });
+            }
+            return await db.diagram_filters.get({ diagramId });
         },
         [db]
     );
@@ -277,6 +407,14 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const updateDiagramFilter: StorageContext['updateDiagramFilter'] =
         useCallback(
             async (diagramId, filter): Promise<void> => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/diagram-filters/${diagramId}`,
+                        method: 'PUT',
+                        payload: { ...filter },
+                    });
+                    return;
+                }
                 await db.diagram_filters.put({
                     diagramId,
                     ...filter,
@@ -288,6 +426,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const deleteDiagramFilter: StorageContext['deleteDiagramFilter'] =
         useCallback(
             async (diagramId: string): Promise<void> => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/diagram-filters/${diagramId}`,
+                        method: 'DELETE',
+                    });
+                    return;
+                }
                 await db.diagram_filters.where({ diagramId }).delete();
             },
             [db]
@@ -295,6 +440,14 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const addTable: StorageContext['addTable'] = useCallback(
         async ({ diagramId, table }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-tables/${diagramId}`,
+                    method: 'POST',
+                    payload: table,
+                });
+                return;
+            }
             await db.db_tables.add({
                 ...table,
                 diagramId,
@@ -305,6 +458,7 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const getTable: StorageContext['getTable'] = useCallback(
         async ({ id, diagramId }): Promise<DBTable | undefined> => {
+            // Not using remote DB
             return await db.db_tables.get({ id, diagramId });
         },
         [db]
@@ -313,6 +467,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const deleteDiagramTables: StorageContext['deleteDiagramTables'] =
         useCallback(
             async (diagramId) => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/db-tables/${diagramId}`,
+                        method: 'DELETE',
+                    });
+                    return;
+                }
                 await db.db_tables
                     .where('diagramId')
                     .equals(diagramId)
@@ -322,21 +483,55 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
         );
 
     const updateTable: StorageContext['updateTable'] = useCallback(
-        async ({ id, attributes }) => {
+        async ({ id, diagramId, attributes }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-tables/${diagramId}/${id}`,
+                    method: 'PUT',
+                    payload: attributes,
+                });
+                return;
+            }
             await db.db_tables.update(id, attributes);
         },
         [db]
     );
 
+    const updateTableDebounce = debounce(updateTable, 1000);
+
     const putTable: StorageContext['putTable'] = useCallback(
         async ({ diagramId, table }) => {
+            // Not using remote DB
             await db.db_tables.put({ ...table, diagramId });
         },
         [db]
     );
 
+    const putTables: StorageContext['putTables'] = useCallback(
+        async ({ diagramId, tables }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-tables/${diagramId}`,
+                    method: 'PUT',
+                    payload: tables,
+                });
+                return;
+            }
+        },
+        []
+    );
+
+    const putTablesDebounce = debounce(putTables, 1000);
+
     const deleteTable: StorageContext['deleteTable'] = useCallback(
         async ({ id, diagramId }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-tables/${diagramId}/${id}`,
+                    method: 'DELETE',
+                });
+                return;
+            }
             await db.db_tables.where({ id, diagramId }).delete();
         },
         [db]
@@ -345,6 +540,12 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const listTables: StorageContext['listTables'] = useCallback(
         async (diagramId): Promise<DBTable[]> => {
             // Fetch all tables associated with the diagram
+            if (USE_REMOTE_DB) {
+                return (await requestToServer({
+                    path: `/db-tables/${diagramId}`,
+                    method: 'GET',
+                })) as DBTable[];
+            }
             const tables = await db.db_tables
                 .where('diagramId')
                 .equals(diagramId)
@@ -357,6 +558,14 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const addRelationship: StorageContext['addRelationship'] = useCallback(
         async ({ diagramId, relationship }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-relationships/${diagramId}`,
+                    method: 'POST',
+                    payload: relationship,
+                });
+                return;
+            }
             await db.db_relationships.add({
                 ...relationship,
                 diagramId,
@@ -368,6 +577,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const deleteDiagramRelationships: StorageContext['deleteDiagramRelationships'] =
         useCallback(
             async (diagramId) => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/db-relationships/${diagramId}`,
+                        method: 'DELETE',
+                    });
+                    return;
+                }
                 await db.db_relationships
                     .where('diagramId')
                     .equals(diagramId)
@@ -378,6 +594,7 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const getRelationship: StorageContext['getRelationship'] = useCallback(
         async ({ id, diagramId }): Promise<DBRelationship | undefined> => {
+            // Not using remote DB
             return await db.db_relationships.get({ id, diagramId });
         },
         [db]
@@ -385,7 +602,15 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const updateRelationship: StorageContext['updateRelationship'] =
         useCallback(
-            async ({ id, attributes }) => {
+            async ({ id, diagramId, attributes }) => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/db-relationships/${diagramId}/${id}`,
+                        method: 'PUT',
+                        payload: attributes,
+                    });
+                    return;
+                }
                 await db.db_relationships.update(id, attributes);
             },
             [db]
@@ -394,6 +619,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const deleteRelationship: StorageContext['deleteRelationship'] =
         useCallback(
             async ({ id, diagramId }) => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/db-relationships/${diagramId}/${id}`,
+                        method: 'DELETE',
+                    });
+                    return;
+                }
                 await db.db_relationships.where({ id, diagramId }).delete();
             },
             [db]
@@ -402,6 +634,15 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const listRelationships: StorageContext['listRelationships'] = useCallback(
         async (diagramId): Promise<DBRelationship[]> => {
             // Sort relationships alphabetically
+            if (USE_REMOTE_DB) {
+                const relationships = (await requestToServer({
+                    path: `/db-relationships/${diagramId}`,
+                    method: 'GET',
+                })) as DBRelationship[];
+                return relationships.sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                );
+            }
             return (
                 await db.db_relationships
                     .where('diagramId')
@@ -468,6 +709,14 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const addArea: StorageContext['addArea'] = useCallback(
         async ({ area, diagramId }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/areas/${diagramId}`,
+                    method: 'POST',
+                    payload: area,
+                });
+                return;
+            }
             await db.areas.add({
                 ...area,
                 diagramId,
@@ -478,20 +727,38 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const getArea: StorageContext['getArea'] = useCallback(
         async ({ diagramId, id }) => {
+            // Not using remote DB
             return await db.areas.get({ id, diagramId });
         },
         [db]
     );
 
     const updateArea: StorageContext['updateArea'] = useCallback(
-        async ({ id, attributes }) => {
+        async ({ id, diagramId, attributes }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/areas/${diagramId}/${id}`,
+                    method: 'PUT',
+                    payload: attributes,
+                });
+                return;
+            }
             await db.areas.update(id, attributes);
         },
         [db]
     );
 
+    const updateAreaDebounce = debounce(updateArea, 1000);
+
     const deleteArea: StorageContext['deleteArea'] = useCallback(
         async ({ diagramId, id }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/areas/${diagramId}/${id}`,
+                    method: 'DELETE',
+                });
+                return;
+            }
             await db.areas.where({ id, diagramId }).delete();
         },
         [db]
@@ -499,6 +766,12 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const listAreas: StorageContext['listAreas'] = useCallback(
         async (diagramId) => {
+            if (USE_REMOTE_DB) {
+                return (await requestToServer({
+                    path: `/areas/${diagramId}`,
+                    method: 'GET',
+                })) as Area[];
+            }
             return await db.areas
                 .where('diagramId')
                 .equals(diagramId)
@@ -510,6 +783,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const deleteDiagramAreas: StorageContext['deleteDiagramAreas'] =
         useCallback(
             async (diagramId) => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/areas/${diagramId}`,
+                        method: 'DELETE',
+                    });
+                    return;
+                }
                 await db.areas.where('diagramId').equals(diagramId).delete();
             },
             [db]
@@ -518,6 +798,14 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     // Custom type operations
     const addCustomType: StorageContext['addCustomType'] = useCallback(
         async ({ diagramId, customType }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-custom-types/${diagramId}`,
+                    method: 'POST',
+                    payload: customType,
+                });
+                return;
+            }
             await db.db_custom_types.add({
                 ...customType,
                 diagramId,
@@ -528,13 +816,22 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const getCustomType: StorageContext['getCustomType'] = useCallback(
         async ({ diagramId, id }): Promise<DBCustomType | undefined> => {
+            // Not using remote DB
             return await db.db_custom_types.get({ id, diagramId });
         },
         [db]
     );
 
     const updateCustomType: StorageContext['updateCustomType'] = useCallback(
-        async ({ id, attributes }) => {
+        async ({ id, diagramId, attributes }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-custom-types/${diagramId}/${id}`,
+                    method: 'PUT',
+                    payload: attributes,
+                });
+                return;
+            }
             await db.db_custom_types.update(id, attributes);
         },
         [db]
@@ -542,6 +839,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const deleteCustomType: StorageContext['deleteCustomType'] = useCallback(
         async ({ diagramId, id }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/db-custom-types/${diagramId}/${id}`,
+                    method: 'DELETE',
+                });
+                return;
+            }
             await db.db_custom_types.where({ id, diagramId }).delete();
         },
         [db]
@@ -549,6 +853,12 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const listCustomTypes: StorageContext['listCustomTypes'] = useCallback(
         async (diagramId): Promise<DBCustomType[]> => {
+            if (USE_REMOTE_DB) {
+                return (await requestToServer({
+                    path: `/db-custom-types/${diagramId}`,
+                    method: 'GET',
+                })) as DBCustomType[];
+            }
             return (
                 await db.db_custom_types
                     .where('diagramId')
@@ -564,6 +874,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const deleteDiagramCustomTypes: StorageContext['deleteDiagramCustomTypes'] =
         useCallback(
             async (diagramId) => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/db-custom-types/${diagramId}`,
+                        method: 'DELETE',
+                    });
+                    return;
+                }
                 await db.db_custom_types
                     .where('diagramId')
                     .equals(diagramId)
@@ -575,6 +892,14 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     // Note operations
     const addNote: StorageContext['addNote'] = useCallback(
         async ({ note, diagramId }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/notes/${diagramId}`,
+                    method: 'POST',
+                    payload: note,
+                });
+                return;
+            }
             await db.notes.add({
                 ...note,
                 diagramId,
@@ -585,20 +910,38 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const getNote: StorageContext['getNote'] = useCallback(
         async ({ diagramId, id }) => {
+            // Not using remote DB
             return await db.notes.get({ id, diagramId });
         },
         [db]
     );
 
     const updateNote: StorageContext['updateNote'] = useCallback(
-        async ({ id, attributes }) => {
+        async ({ id, diagramId, attributes }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/notes/${diagramId}/${id}`,
+                    method: 'PUT',
+                    payload: attributes,
+                });
+                return;
+            }
             await db.notes.update(id, attributes);
         },
         [db]
     );
 
+    const updateNoteDebounce = debounce(updateNote, 1000);
+
     const deleteNote: StorageContext['deleteNote'] = useCallback(
         async ({ diagramId, id }) => {
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/notes/${diagramId}/${id}`,
+                    method: 'DELETE',
+                });
+                return;
+            }
             await db.notes.where({ id, diagramId }).delete();
         },
         [db]
@@ -606,6 +949,12 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const listNotes: StorageContext['listNotes'] = useCallback(
         async (diagramId) => {
+            if (USE_REMOTE_DB) {
+                return (await requestToServer({
+                    path: `/notes/${diagramId}`,
+                    method: 'GET',
+                })) as Note[];
+            }
             return await db.notes
                 .where('diagramId')
                 .equals(diagramId)
@@ -617,6 +966,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const deleteDiagramNotes: StorageContext['deleteDiagramNotes'] =
         useCallback(
             async (diagramId) => {
+                if (USE_REMOTE_DB) {
+                    await requestToServer({
+                        path: `/notes/${diagramId}`,
+                        method: 'DELETE',
+                    });
+                    return;
+                }
                 await db.notes.where('diagramId').equals(diagramId).delete();
             },
             [db]
@@ -625,16 +981,48 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     const addDiagram: StorageContext['addDiagram'] = useCallback(
         async ({ diagram }) => {
             const promises = [];
-            promises.push(
-                db.diagrams.add({
-                    id: diagram.id,
-                    name: diagram.name,
-                    databaseType: diagram.databaseType,
-                    databaseEdition: diagram.databaseEdition,
-                    createdAt: diagram.createdAt,
-                    updatedAt: diagram.updatedAt,
-                })
-            );
+            if (USE_REMOTE_DB) {
+                const tzOffset = new Date().getTimezoneOffset() * 60000;
+                let createdAt: string | undefined;
+                let updatedAt: string | undefined;
+                if (typeof diagram.createdAt === 'object') {
+                    createdAt = new Date(
+                        diagram.createdAt.getTime() - tzOffset
+                    ).toISOString();
+                } else {
+                    createdAt = diagram.createdAt;
+                }
+                if (typeof diagram.updatedAt === 'object') {
+                    updatedAt = new Date(
+                        diagram.updatedAt.getTime() - tzOffset
+                    ).toISOString();
+                } else {
+                    updatedAt = diagram.updatedAt;
+                }
+                await requestToServer({
+                    path: `/diagrams`,
+                    method: 'POST',
+                    payload: {
+                        id: diagram.id,
+                        name: diagram.name,
+                        databaseType: diagram.databaseType,
+                        databaseEdition: diagram.databaseEdition,
+                        createdAt,
+                        updatedAt,
+                    },
+                });
+            } else {
+                promises.push(
+                    db.diagrams.add({
+                        id: diagram.id,
+                        name: diagram.name,
+                        databaseType: diagram.databaseType,
+                        databaseEdition: diagram.databaseEdition,
+                        createdAt: diagram.createdAt,
+                        updatedAt: diagram.updatedAt,
+                    })
+                );
+            }
 
             const tables = diagram.tables ?? [];
             promises.push(
@@ -698,7 +1086,21 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
                 includeNotes: false,
             }
         ): Promise<Diagram[]> => {
-            let diagrams = await db.diagrams.toArray();
+            let diagrams: Diagram[];
+            if (USE_REMOTE_DB) {
+                diagrams = (await requestToServer({
+                    path: `/diagrams`,
+                    method: 'GET',
+                })) as Diagram[];
+            } else {
+                diagrams = await db.diagrams.toArray();
+            }
+
+            diagrams = diagrams.map((diagram) => ({
+                ...diagram,
+                createdAt: new Date(Date.parse(diagram.createdAt.toString())),
+                updatedAt: new Date(Date.parse(diagram.updatedAt.toString())),
+            }));
 
             if (options.includeTables) {
                 diagrams = await Promise.all(
@@ -783,9 +1185,17 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
                 includeNotes: false,
             }
         ): Promise<Diagram | undefined> => {
-            const diagram = await db.diagrams.get(id);
+            let diagram: Diagram | undefined;
+            if (USE_REMOTE_DB) {
+                diagram = (await requestToServer({
+                    path: `/diagrams/${id}`,
+                    method: 'GET',
+                })) as Diagram;
+            } else {
+                diagram = await db.diagrams.get(id);
+            }
 
-            if (!diagram) {
+            if (!diagram || diagram.updatedAt == undefined) {
                 return undefined;
             }
 
@@ -828,7 +1238,25 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
     const updateDiagram: StorageContext['updateDiagram'] = useCallback(
         async ({ id, attributes }) => {
-            await db.diagrams.update(id, attributes);
+            if (USE_REMOTE_DB) {
+                const tzOffset = new Date().getTimezoneOffset() * 60000;
+                let updatedAt: string | undefined;
+                if (attributes.updatedAt) {
+                    updatedAt = new Date(
+                        attributes.updatedAt.getTime() - tzOffset
+                    ).toISOString();
+                }
+                await requestToServer({
+                    path: `/diagrams/${id}`,
+                    method: 'PUT',
+                    payload: {
+                        ...attributes,
+                        updatedAt,
+                    },
+                });
+            } else {
+                await db.diagrams.update(id, attributes);
+            }
 
             if (attributes.id) {
                 await Promise.all([
@@ -860,17 +1288,26 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
         [db]
     );
 
+    const updateDiagramDebounce = debounce(updateDiagram, 1000);
+
     const deleteDiagram: StorageContext['deleteDiagram'] = useCallback(
         async (id) => {
-            await Promise.all([
-                db.diagrams.delete(id),
-                db.db_tables.where('diagramId').equals(id).delete(),
-                db.db_relationships.where('diagramId').equals(id).delete(),
-                db.db_dependencies.where('diagramId').equals(id).delete(),
-                db.areas.where('diagramId').equals(id).delete(),
-                db.db_custom_types.where('diagramId').equals(id).delete(),
-                db.notes.where('diagramId').equals(id).delete(),
-            ]);
+            if (USE_REMOTE_DB) {
+                await requestToServer({
+                    path: `/diagrams/${id}`,
+                    method: 'DELETE',
+                });
+            } else {
+                await Promise.all([
+                    db.diagrams.delete(id),
+                    db.db_tables.where('diagramId').equals(id).delete(),
+                    db.db_relationships.where('diagramId').equals(id).delete(),
+                    db.db_dependencies.where('diagramId').equals(id).delete(),
+                    db.areas.where('diagramId').equals(id).delete(),
+                    db.db_custom_types.where('diagramId').equals(id).delete(),
+                    db.notes.where('diagramId').equals(id).delete(),
+                ]);
+            }
         },
         [db]
     );
@@ -883,12 +1320,13 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
                 addDiagram,
                 listDiagrams,
                 getDiagram,
-                updateDiagram,
+                updateDiagram: updateDiagramDebounce,
                 deleteDiagram,
                 addTable,
                 getTable,
-                updateTable,
+                updateTable: updateTableDebounce,
                 putTable,
+                putTables: putTablesDebounce,
                 deleteTable,
                 listTables,
                 addRelationship,
@@ -906,7 +1344,7 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
                 deleteDiagramDependencies,
                 addArea,
                 getArea,
-                updateArea,
+                updateArea: updateAreaDebounce,
                 deleteArea,
                 listAreas,
                 deleteDiagramAreas,
@@ -918,7 +1356,7 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
                 deleteDiagramCustomTypes,
                 addNote,
                 getNote,
-                updateNote,
+                updateNote: updateNoteDebounce,
                 deleteNote,
                 listNotes,
                 deleteDiagramNotes,

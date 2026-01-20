@@ -342,9 +342,14 @@ export const exportBaseSQL = ({
                 typeName = customEnumType.schema
                     ? `${customEnumType.schema}.${customEnumType.name}`
                     : customEnumType.name;
-            } else if (typeName.toLowerCase() === 'enum') {
-                // Fallback for non-PG or if custom type not found, or for DBML flow if not handled by CREATE TYPE above
-                typeName = 'text';
+            }
+
+            // Fallback for non-PG or if custom type not found, or for DBML flow if not handled by CREATE TYPE above
+            if (field.allowedValues && field.allowedValues.length > 0) {
+                const allowedVals = field.allowedValues
+                    .map((v) => `'${v}'`)
+                    .join(',');
+                typeName = `${field.type.name}(${allowedVals})`;
             }
 
             // Check if the field type is a known composite custom type
@@ -397,13 +402,13 @@ export const exportBaseSQL = ({
                 sqlScript += `(${field.characterMaximumLength})`;
             } else if (field.type.name.toLowerCase().includes('varchar')) {
                 // Keep varchar sizing, but don't apply to TEXT (previously enum)
-                sqlScript += `(500)`;
+                sqlScript += `(50)`;
             } else if (
                 typeName.toLowerCase() === 'char' &&
                 !field.characterMaximumLength
             ) {
                 // Default char without explicit length to char(1) for compatibility
-                sqlScript += `(1)`;
+                sqlScript += `(50)`;
             }
 
             // Add precision and scale for numeric types only
@@ -778,7 +783,7 @@ export const exportSQL = async (
     const modelName =
         window?.env?.LLM_MODEL_NAME ??
         LLM_MODEL_NAME ??
-        'gpt-4o-mini-2024-07-18';
+        'gpt-5-nano-2025-08-07';
 
     let config: { apiKey: string; baseUrl?: string };
 

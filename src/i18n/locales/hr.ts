@@ -156,6 +156,8 @@ export const hr: LanguageTranslation = {
                         default_value: 'Zadana vrijednost',
                         no_default: 'Nema zadane vrijednosti',
                         delete_field: 'Izbriši polje',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Atributi indeksa',
@@ -177,6 +179,7 @@ export const hr: LanguageTranslation = {
                         duplicate_table: 'Dupliciraj tablicu',
                         delete_table: 'Izbriši tablicu',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Nema tablica',
@@ -323,6 +326,8 @@ export const hr: LanguageTranslation = {
                     'Svaka baza podataka ima svoje jedinstvene značajke i mogućnosti.',
                 check_examples_long: 'Pogledaj primjere',
                 check_examples_short: 'Primjeri',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -555,6 +560,10 @@ export const hr: LanguageTranslation = {
 
         on: 'Uključeno',
         off: 'Isključeno',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

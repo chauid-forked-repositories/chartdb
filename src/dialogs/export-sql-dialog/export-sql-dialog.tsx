@@ -264,7 +264,7 @@ export const ExportSQLDialog: React.FC<ExportSQLDialogProps> = ({
             }}
         >
             <DialogContent
-                className="flex max-h-screen flex-col overflow-y-auto xl:min-w-[75vw]"
+                className="flex max-h-screen flex-col overflow-y-auto px-10 py-6 xl:min-w-[75vw]"
                 showClose
             >
                 <DialogHeader>

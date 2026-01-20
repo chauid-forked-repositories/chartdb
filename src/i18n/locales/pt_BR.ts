@@ -161,6 +161,8 @@ export const pt_BR: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Precisão',
                         scale: 'Escala',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Atributos do Índice',
@@ -182,6 +184,7 @@ export const pt_BR: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table', // TODO: Translate
                         delete_table: 'Excluir Tabela',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Sem tabelas',
@@ -329,6 +332,8 @@ export const pt_BR: LanguageTranslation = {
                     'Cada banco de dados possui recursos e capacidades únicas.',
                 check_examples_long: 'Ver Exemplos',
                 check_examples_short: 'Exemplos',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -564,6 +569,10 @@ export const pt_BR: LanguageTranslation = {
 
         on: 'Ligado',
         off: 'Desligado',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

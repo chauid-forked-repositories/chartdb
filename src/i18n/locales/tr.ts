@@ -160,6 +160,8 @@ export const tr: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Hassasiyet',
                         scale: 'Ölçek',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'İndeks Özellikleri',
@@ -182,6 +184,7 @@ export const tr: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table',
                         delete_table: 'Tabloyu Sil',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Tablo yok',
@@ -324,6 +327,8 @@ export const tr: LanguageTranslation = {
                     'Her veritabanının kendine özgü özellikleri ve yetenekleri vardır.',
                 check_examples_long: 'Örnekleri Kontrol Et',
                 check_examples_short: 'Örnekler',
+                check_templates_long: '',
+                check_templates_short: '',
             },
             import_database: {
                 title: 'Veritabanını İçe Aktar',
@@ -552,6 +557,10 @@ export const tr: LanguageTranslation = {
 
         on: 'Açık',
         off: 'Kapalı',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

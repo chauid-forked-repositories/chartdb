@@ -33,6 +33,7 @@ import { ChartDBProvider } from '@/context/chartdb-context/chartdb-provider';
 import { Helmet } from 'react-helmet-async';
 import { APP_URL, HOST_URL } from '@/lib/env';
 import { Link } from '@/components/link/link';
+import { DiffProvider } from '@/context/diff-context/diff-provider';
 
 export interface TemplatePageLoaderData {
     template: Template | undefined;
@@ -126,7 +127,7 @@ const TemplatePageComponent: React.FC = () => {
                     <div className="flex flex-1 justify-start gap-x-3">
                         <div className="flex items-center font-primary">
                             <a
-                                href="https://chartdb.io"
+                                href="/"
                                 className="cursor-pointer"
                                 rel="noreferrer"
                             >
@@ -307,9 +308,11 @@ const TemplatePageComponent: React.FC = () => {
 export const TemplatePage: React.FC = () => (
     <LocalConfigProvider>
         <ThemeProvider>
-            <ReactFlowProvider>
-                <TemplatePageComponent />
-            </ReactFlowProvider>
+            <DiffProvider>
+                <ReactFlowProvider>
+                    <TemplatePageComponent />
+                </ReactFlowProvider>
+            </DiffProvider>
         </ThemeProvider>
     </LocalConfigProvider>
 );

@@ -161,6 +161,8 @@ export const hi: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Precision',
                         scale: 'Scale',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'सूचकांक विशेषताएँ',
@@ -182,6 +184,7 @@ export const hi: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table', // TODO: Translate
                         delete_table: 'तालिका हटाएँ',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'कोई तालिकाएँ नहीं',
@@ -329,6 +332,8 @@ export const hi: LanguageTranslation = {
                     'प्रत्येक डेटाबेस की अपनी अनूठी विशेषताएँ और क्षमताएँ होती हैं।',
                 check_examples_long: 'उदाहरण देखें',
                 check_examples_short: 'उदाहरण',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -567,6 +572,10 @@ export const hi: LanguageTranslation = {
 
         on: 'चालू',
         off: 'बंद',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

@@ -157,6 +157,8 @@ export const zh_TW: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: '精度',
                         scale: '小數位',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: '索引屬性',
@@ -178,6 +180,7 @@ export const zh_TW: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table', // TODO: Translate
                         delete_table: '刪除表格',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: '尚無表格',
@@ -320,6 +323,8 @@ export const zh_TW: LanguageTranslation = {
                 description: '每種資料庫都有其獨特的功能和能力。',
                 check_examples_long: '查看範例',
                 check_examples_short: '範例',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -550,6 +555,10 @@ export const zh_TW: LanguageTranslation = {
 
         on: '開啟',
         off: '關閉',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

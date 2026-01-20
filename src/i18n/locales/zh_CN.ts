@@ -157,6 +157,8 @@ export const zh_CN: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: '精度',
                         scale: '小数位',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: '索引属性',
@@ -178,6 +180,7 @@ export const zh_CN: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table', // TODO: Translate
                         delete_table: '删除表',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: '没有表',
@@ -320,6 +323,8 @@ export const zh_CN: LanguageTranslation = {
                 description: '每种数据库都有其特性和功能。',
                 check_examples_long: '查看样例',
                 check_examples_short: '样例',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -550,6 +555,10 @@ export const zh_CN: LanguageTranslation = {
 
         on: '开启',
         off: '关闭',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

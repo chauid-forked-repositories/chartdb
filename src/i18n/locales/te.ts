@@ -161,6 +161,8 @@ export const te: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'సూక్ష్మత',
                         scale: 'స్కేల్',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'ఇండెక్స్ గుణాలు',
@@ -183,6 +185,7 @@ export const te: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table',
                         delete_table: 'పట్టికను తొలగించు',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'పట్టికలు లేవు',
@@ -328,6 +331,8 @@ export const te: LanguageTranslation = {
                     'ప్రతి డేటాబేస్‌కు ప్రత్యేక లక్షణాలు మరియు సామర్థ్యాలు ఉంటాయి.',
                 check_examples_long: 'ఉదాహరణలు చూడండి',
                 check_examples_short: 'ఉదాహరణలు',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -569,6 +574,10 @@ export const te: LanguageTranslation = {
 
         on: 'ఆన్',
         off: 'ఆఫ్',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

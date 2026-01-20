@@ -2,8 +2,18 @@ import type { DataTypeData } from './data-types';
 
 export const mariadbDataTypes: readonly DataTypeData[] = [
     // Level 1 - Most commonly used types
-    { name: 'int', id: 'int', usageLevel: 1 },
-    { name: 'bigint', id: 'bigint', usageLevel: 1 },
+    {
+        name: 'int',
+        id: 'int',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+        usageLevel: 1,
+    },
+    {
+        name: 'bigint',
+        id: 'bigint',
+        usageLevel: 1,
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+    },
     {
         name: 'decimal',
         id: 'decimal',
@@ -15,31 +25,59 @@ export const mariadbDataTypes: readonly DataTypeData[] = [
                 default: 10,
             },
             scale: {
-                max: 30,
+                max: 38,
                 min: 0,
                 default: 0,
             },
         },
     },
     { name: 'boolean', id: 'boolean', usageLevel: 1 },
-    { name: 'datetime', id: 'datetime', usageLevel: 1 },
+    {
+        name: 'datetime',
+        id: 'datetime',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 6 },
+        usageLevel: 1,
+    },
     { name: 'date', id: 'date', usageLevel: 1 },
-    { name: 'timestamp', id: 'timestamp', usageLevel: 1 },
+    {
+        name: 'timestamp',
+        id: 'timestamp',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 6 },
+        usageLevel: 1,
+    },
     {
         name: 'varchar',
         id: 'varchar',
-        fieldAttributes: { hasCharMaxLength: true },
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 191 },
+        usageLevel: 1,
     },
-    { name: 'text', id: 'text', usageLevel: 1 },
+    {
+        name: 'text',
+        id: 'text',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 4294967295 },
+        usageLevel: 1,
+    },
 
     // Level 2 - Second most common types
     { name: 'json', id: 'json', usageLevel: 2 },
     { name: 'uuid', id: 'uuid', usageLevel: 2 },
 
     // Less common types
-    { name: 'tinyint', id: 'tinyint' },
-    { name: 'smallint', id: 'smallint' },
-    { name: 'mediumint', id: 'mediumint' },
+    {
+        name: 'tinyint',
+        id: 'tinyint',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+    },
+    {
+        name: 'smallint',
+        id: 'smallint',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+    },
+    {
+        name: 'mediumint',
+        id: 'mediumint',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 255 },
+    },
     {
         name: 'numeric',
         id: 'numeric',
@@ -50,29 +88,63 @@ export const mariadbDataTypes: readonly DataTypeData[] = [
                 default: 10,
             },
             scale: {
+                max: 38,
+                min: 0,
+                default: 0,
+            },
+        },
+    },
+    {
+        name: 'float',
+        id: 'float',
+        fieldAttributes: {
+            precision: {
+                max: 255,
+                min: 1,
+                default: 10,
+            },
+            scale: {
                 max: 30,
                 min: 0,
                 default: 0,
             },
         },
     },
-    { name: 'float', id: 'float' },
-    { name: 'double', id: 'double' },
-    { name: 'bit', id: 'bit' },
+    {
+        name: 'double',
+        id: 'double',
+        fieldAttributes: {
+            precision: {
+                max: 255,
+                min: 1,
+                default: 10,
+            },
+            scale: {
+                max: 30,
+                min: 0,
+                default: 0,
+            },
+        },
+    },
+    {
+        name: 'bit',
+        id: 'bit',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 64 },
+    },
     { name: 'bool', id: 'bool' },
-    { name: 'time', id: 'time' },
+    {
+        name: 'time',
+        id: 'time',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 6 },
+    },
     { name: 'year', id: 'year' },
-    { name: 'char', id: 'char', fieldAttributes: { hasCharMaxLength: true } },
     {
-        name: 'binary',
-        id: 'binary',
-        fieldAttributes: { hasCharMaxLength: true },
+        name: 'char',
+        id: 'char',
+        fieldAttributes: { hasCharMaxLength: true, maxLength: 191 },
     },
-    {
-        name: 'varbinary',
-        id: 'varbinary',
-        fieldAttributes: { hasCharMaxLength: true },
-    },
+    { name: 'binary', id: 'binary' },
+    { name: 'varbinary', id: 'varbinary' },
     { name: 'tinyblob', id: 'tinyblob' },
     { name: 'blob', id: 'blob' },
     { name: 'mediumblob', id: 'mediumblob' },
@@ -80,8 +152,8 @@ export const mariadbDataTypes: readonly DataTypeData[] = [
     { name: 'tinytext', id: 'tinytext' },
     { name: 'mediumtext', id: 'mediumtext' },
     { name: 'longtext', id: 'longtext' },
-    { name: 'enum', id: 'enum' },
-    { name: 'set', id: 'set' },
+    { name: 'enum', id: 'enum', fieldAttributes: { allowedValues: true } },
+    { name: 'set', id: 'set', fieldAttributes: { allowedValues: true } },
     { name: 'geometry', id: 'geometry' },
     { name: 'point', id: 'point' },
     { name: 'linestring', id: 'linestring' },

@@ -161,6 +161,8 @@ export const de: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'Präzision',
                         scale: 'Skalierung',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Indexattribute',
@@ -182,6 +184,7 @@ export const de: LanguageTranslation = {
                         duplicate_table: 'Duplicate Table', // TODO: Translate
                         delete_table: 'Tabelle löschen',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Keine Tabellen',
@@ -330,6 +333,8 @@ export const de: LanguageTranslation = {
                     'Jede Datenbank hat ihre eigenen Funktionen und Möglichkeiten.',
                 check_examples_long: 'Beispiele ansehen',
                 check_examples_short: 'Beispiele',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -566,6 +571,10 @@ export const de: LanguageTranslation = {
 
         on: 'Ein',
         off: 'Aus',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

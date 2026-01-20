@@ -192,6 +192,7 @@ export const ChartDBProvider: React.FC<
                 db.deleteDiagramDependencies(diagramId),
                 db.deleteDiagramAreas(diagramId),
                 db.deleteDiagramCustomTypes(diagramId),
+                db.deleteDiagramFilter(diagramId),
                 db.deleteDiagramNotes(diagramId),
             ]);
         }, [db, diagramId, resetRedoStack, resetUndoStack]);
@@ -218,6 +219,7 @@ export const ChartDBProvider: React.FC<
                 db.deleteDiagramDependencies(diagramId),
                 db.deleteDiagramAreas(diagramId),
                 db.deleteDiagramCustomTypes(diagramId),
+                db.deleteDiagramFilter(diagramId),
                 db.deleteDiagramNotes(diagramId),
             ]);
         }, [db, diagramId, resetRedoStack, resetUndoStack]);
@@ -489,7 +491,7 @@ export const ChartDBProvider: React.FC<
             setDiagramUpdatedAt(updatedAt);
             await Promise.all([
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
-                db.updateTable({ id, attributes: table }),
+                db.updateTable({ id, diagramId, attributes: table }),
             ]);
 
             if (!!prevTable && options.updateHistory) {
@@ -594,6 +596,7 @@ export const ChartDBProvider: React.FC<
                     })
                 );
             }
+            promises.push(db.putTables({ diagramId, tables: updatedTables }));
 
             for (const table of tablesToDelete) {
                 promises.push(db.deleteTable({ diagramId, id: table.id }));
@@ -687,7 +690,8 @@ export const ChartDBProvider: React.FC<
                 })
             );
 
-            const table = await db.getTable({ diagramId, id: tableId });
+            // const table = await db.getTable({ diagramId, id: tableId });
+            const table = getTable(tableId);
             if (!table) {
                 return;
             }
@@ -698,6 +702,7 @@ export const ChartDBProvider: React.FC<
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
                 db.updateTable({
                     id: tableId,
+                    diagramId,
                     attributes: {
                         ...updateTableFn(table),
                     },
@@ -717,7 +722,7 @@ export const ChartDBProvider: React.FC<
                 resetRedoStack();
             }
         },
-        [db, diagramId, setTables, addUndoAction, resetRedoStack, getField]
+        [getField, db, diagramId, getTable, addUndoAction, resetRedoStack]
     );
 
     const removeField: ChartDBContext['removeField'] = useCallback(
@@ -760,7 +765,8 @@ export const ChartDBProvider: React.FC<
                 },
             });
 
-            const table = await db.getTable({ diagramId, id: tableId });
+            // const table = await db.getTable({ diagramId, id: tableId });
+            const table = getTable(tableId);
             if (!table) {
                 return;
             }
@@ -771,6 +777,7 @@ export const ChartDBProvider: React.FC<
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
                 db.updateTable({
                     id: tableId,
+                    diagramId,
                     attributes: {
                         ...updateTableFn(table),
                     },
@@ -810,6 +817,7 @@ export const ChartDBProvider: React.FC<
                     if (table.id === tableId) {
                         db.updateTable({
                             id: tableId,
+                            diagramId,
                             attributes: {
                                 ...table,
                                 fields: [...table.fields, field],
@@ -832,8 +840,8 @@ export const ChartDBProvider: React.FC<
                 },
             });
 
-            const table = await db.getTable({ diagramId, id: tableId });
-
+            // const table = await db.getTable({ diagramId, id: tableId });
+            const table = getTable(tableId);
             if (!table) {
                 return;
             }
@@ -906,8 +914,9 @@ export const ChartDBProvider: React.FC<
                 )
             );
 
-            const dbTable = await db.getTable({ diagramId, id: tableId });
-            if (!dbTable) {
+            // const dbTable = await db.getTable({ diagramId, id: tableId });
+            const table = getTable(tableId);
+            if (!table) {
                 return;
             }
 
@@ -917,9 +926,10 @@ export const ChartDBProvider: React.FC<
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
                 db.updateTable({
                     id: tableId,
+                    diagramId,
                     attributes: {
-                        ...dbTable,
-                        indexes: [...dbTable.indexes, index],
+                        ...table,
+                        indexes: [...table.indexes, index],
                     },
                 }),
             ]);
@@ -933,7 +943,7 @@ export const ChartDBProvider: React.FC<
                 resetRedoStack();
             }
         },
-        [db, diagramId, setTables, addUndoAction, resetRedoStack]
+        [getTable, db, diagramId, addUndoAction, resetRedoStack]
     );
 
     const removeIndex: ChartDBContext['removeIndex'] = useCallback(
@@ -956,12 +966,13 @@ export const ChartDBProvider: React.FC<
                 )
             );
 
-            const dbTable = await db.getTable({
-                diagramId,
-                id: tableId,
-            });
+            // const dbTable = await db.getTable({
+            //     diagramId,
+            //     id: tableId,
+            // });
+            const table = getTable(tableId);
 
-            if (!dbTable) {
+            if (!table) {
                 return;
             }
 
@@ -971,11 +982,10 @@ export const ChartDBProvider: React.FC<
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
                 db.updateTable({
                     id: tableId,
+                    diagramId,
                     attributes: {
-                        ...dbTable,
-                        indexes: dbTable.indexes.filter(
-                            (i) => i.id !== indexId
-                        ),
+                        ...table,
+                        indexes: table.indexes.filter((i) => i.id !== indexId),
                     },
                 }),
             ]);
@@ -989,7 +999,7 @@ export const ChartDBProvider: React.FC<
                 resetRedoStack();
             }
         },
-        [db, diagramId, setTables, addUndoAction, resetRedoStack, getIndex]
+        [getIndex, getTable, db, diagramId, addUndoAction, resetRedoStack]
     );
 
     const createIndex: ChartDBContext['createIndex'] = useCallback(
@@ -1031,9 +1041,10 @@ export const ChartDBProvider: React.FC<
                 )
             );
 
-            const dbTable = await db.getTable({ diagramId, id: tableId });
+            // const dbTable = await db.getTable({ diagramId, id: tableId });
+            const table = getTable(tableId);
 
-            if (!dbTable) {
+            if (!table) {
                 return;
             }
 
@@ -1043,9 +1054,10 @@ export const ChartDBProvider: React.FC<
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
                 db.updateTable({
                     id: tableId,
+                    diagramId,
                     attributes: {
-                        ...dbTable,
-                        indexes: dbTable.indexes.map((i) =>
+                        ...table,
+                        indexes: table.indexes.map((i) =>
                             i.id === indexId ? { ...i, ...index } : i
                         ),
                     },
@@ -1061,7 +1073,7 @@ export const ChartDBProvider: React.FC<
                 resetRedoStack();
             }
         },
-        [db, diagramId, setTables, addUndoAction, resetRedoStack, getIndex]
+        [getIndex, getTable, db, diagramId, addUndoAction, resetRedoStack]
     );
 
     const addCheckConstraint: ChartDBContext['addCheckConstraint'] =
@@ -1106,6 +1118,7 @@ export const ChartDBProvider: React.FC<
                                 constraint,
                             ],
                         },
+                        diagramId: '',
                     }),
                 ]);
 
@@ -1182,6 +1195,7 @@ export const ChartDBProvider: React.FC<
                                 dbTable.checkConstraints ?? []
                             ).filter((c) => c.id !== constraintId),
                         },
+                        diagramId: '',
                     }),
                 ]);
 
@@ -1251,6 +1265,7 @@ export const ChartDBProvider: React.FC<
                                     : c
                             ),
                         },
+                        diagramId: '',
                     }),
                 ]);
 
@@ -1437,7 +1452,11 @@ export const ChartDBProvider: React.FC<
                         id: diagramId,
                         attributes: { updatedAt },
                     }),
-                    db.updateRelationship({ id, attributes: relationship }),
+                    db.updateRelationship({
+                        id,
+                        diagramId,
+                        attributes: relationship,
+                    }),
                 ]);
 
                 if (!!prevRelationship && options.updateHistory) {
@@ -1729,7 +1748,7 @@ export const ChartDBProvider: React.FC<
 
             await Promise.all([
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
-                db.updateArea({ id, attributes: area }),
+                db.updateArea({ id, diagramId, attributes: area }),
             ]);
 
             if (!!prevArea && options.updateHistory) {
@@ -1853,7 +1872,7 @@ export const ChartDBProvider: React.FC<
 
             await Promise.all([
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
-                db.updateNote({ id, attributes: note }),
+                db.updateNote({ id, diagramId, attributes: note }),
             ]);
 
             if (!!prevNote && options.updateHistory) {
@@ -2073,7 +2092,7 @@ export const ChartDBProvider: React.FC<
 
             await Promise.all([
                 db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
-                db.updateCustomType({ id, attributes: customType }),
+                db.updateCustomType({ id, diagramId, attributes: customType }),
             ]);
 
             if (!!prevCustomType && options.updateHistory) {

@@ -30,6 +30,7 @@ interface FieldAttributes {
     precision?: FieldAttributeRange;
     scale?: FieldAttributeRange;
     maxLength?: number;
+    allowedValues?: boolean;
 }
 
 export interface DataTypeData extends DataType {

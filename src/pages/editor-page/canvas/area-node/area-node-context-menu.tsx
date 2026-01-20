@@ -9,6 +9,7 @@ import { useChartDB } from '@/hooks/use-chartdb';
 import type { Area } from '@/lib/domain/area';
 import { Pencil, Trash2 } from 'lucide-react';
 import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface AreaNodeContextMenuProps {
     area: Area;
@@ -20,6 +21,7 @@ export const AreaNodeContextMenu: React.FC<
 > = ({ children, area, onEditName }) => {
     const { removeArea, readonly } = useChartDB();
     const { isMd: isDesktop } = useBreakpoint('md');
+    const { t } = useTranslation();
 
     const removeAreaHandler = useCallback(() => {
         removeArea(area.id);
@@ -37,7 +39,7 @@ export const AreaNodeContextMenu: React.FC<
                         onClick={onEditName}
                         className="flex justify-between gap-3"
                     >
-                        <span>Edit Area Name</span>
+                        <span>{t('area_node_context_menu.edit_name')}</span>
                         <Pencil className="size-3.5" />
                     </ContextMenuItem>
                 ) : null}
@@ -45,7 +47,7 @@ export const AreaNodeContextMenu: React.FC<
                     onClick={removeAreaHandler}
                     className="flex justify-between gap-3"
                 >
-                    <span>Delete Area</span>
+                    <span>{t('area_node_context_menu.delete_area')}</span>
                     <Trash2 className="size-3.5 text-red-700" />
                 </ContextMenuItem>
             </ContextMenuContent>

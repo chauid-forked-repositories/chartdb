@@ -162,6 +162,8 @@ export const gu: LanguageTranslation = {
                         character_length: 'Max Length',
                         precision: 'ચોકસાઈ',
                         scale: 'માપ',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'ઇન્ડેક્સ લક્ષણો',
@@ -183,6 +185,7 @@ export const gu: LanguageTranslation = {
                         duplicate_table: 'ટેબલ ડુપ્લિકેટ કરો',
                         delete_table: 'ટેબલ કાઢી નાખો',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'કોઈ ટેબલ્સ નથી',
@@ -327,6 +330,8 @@ export const gu: LanguageTranslation = {
                 description: 'દરેક ડેટાબેસની પોતાની ખાસિયતો અને ક્ષમતા હોય છે.',
                 check_examples_long: 'ઉદાહરણ જુઓ',
                 check_examples_short: 'ઉદાહરણ',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -562,6 +567,10 @@ export const gu: LanguageTranslation = {
 
         on: 'ચાલુ',
         off: 'બંધ',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 

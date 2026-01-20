@@ -157,6 +157,8 @@ export const ru: LanguageTranslation = {
                         character_length: 'Макс. длина',
                         precision: 'Точность',
                         scale: 'Масштаб',
+                        allowed_values: '',
+                        no_allowed_values: '',
                     },
                     index_actions: {
                         title: 'Атрибуты индекса',
@@ -178,6 +180,7 @@ export const ru: LanguageTranslation = {
                         duplicate_table: 'Создать копию',
                         delete_table: 'Удалить таблицу',
                     },
+                    select_input_placeholder: '',
                 },
                 empty_state: {
                     title: 'Нет таблиц',
@@ -326,6 +329,8 @@ export const ru: LanguageTranslation = {
                     'Каждая база данных имеет свои уникальные функции и возможности.',
                 check_examples_long: 'Открыть примеры',
                 check_examples_short: 'Примеры',
+                check_templates_long: '',
+                check_templates_short: '',
             },
 
             import_database: {
@@ -560,6 +565,10 @@ export const ru: LanguageTranslation = {
 
         on: 'Вкл',
         off: 'Выкл',
+        area_node_context_menu: {
+            edit_name: '',
+            delete_area: '',
+        },
     },
 };
 
